@@ -1,5 +1,6 @@
 from datasets import load_dataset
 
+
 def word_count(batch, columns):
     counts = []
     for i in range(len(batch[columns[0]])):
@@ -17,7 +18,13 @@ def get_word_count_from_columns(dataset, columns):
     return count
 
 
-def get_estimated_cost(count, words_per_1mil_tokens, input_cost_per_1mil_tokens, output_cost_per_1mil_tokens, text_expansion=1.0):
+def get_estimated_cost(
+    count,
+    words_per_1mil_tokens,
+    input_cost_per_1mil_tokens,
+    output_cost_per_1mil_tokens,
+    text_expansion=1.0,
+):
     times = count / words_per_1mil_tokens
     cost_input = times * input_cost_per_1mil_tokens
     cost_output = times * output_cost_per_1mil_tokens * text_expansion
@@ -25,9 +32,9 @@ def get_estimated_cost(count, words_per_1mil_tokens, input_cost_per_1mil_tokens,
 
 
 def main():
-    dataset1 = load_dataset("lavita/medical-qa-datasets", name="all-processed", split="train") # 239k rows
-    dataset2 = load_dataset("lavita/MedREQAL", split="train") # 2.79k rows
-    dataset3 = load_dataset("lavita/AlpaCare-MedInstruct-52k", split="train") # 52k rows
+    dataset1 = load_dataset("lavita/medical-qa-datasets", name="all-processed", split="train")  # 239k rows
+    dataset2 = load_dataset("lavita/MedREQAL", split="train")  # 2.79k rows
+    dataset3 = load_dataset("lavita/AlpaCare-MedInstruct-52k", split="train")  # 52k rows
 
     columns = ["instruction", "input", "output"]
     count1 = get_word_count_from_columns(dataset1, columns)
@@ -45,7 +52,7 @@ def main():
     print(f"Total word count from all datasets: {total_count}")
 
     cost = get_estimated_cost(total_count, 750000, 0.075, 0.3, 1.25)
-    print(f"Estimated cost: {cost}")
+    print(f"Estimated cost: {cost}$")
 
 
 if __name__ == "__main__":
