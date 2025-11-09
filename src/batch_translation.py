@@ -20,6 +20,7 @@ async def poll_batch_job(job_name, interval=30):
         if batch_job.state.name in completed_states:
             return batch_job
 
+        print(f"Batch job {job_name} is still running...")
         await asyncio.sleep(interval)
 
 
@@ -56,7 +57,7 @@ async def process_batch_job(file_path):
 
         res_dir = file_path.parent / "results"
         res_dir.mkdir(parents=True, exist_ok=True)
-        res_path = res_dir / f"{file_path.stem}_results.json"
+        res_path = res_dir / f"{file_path.stem}_results.jsonl"
 
         with open(res_path, "w", encoding="utf-8") as f:
             f.write(file_content.decode("utf-8"))
