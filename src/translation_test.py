@@ -15,7 +15,7 @@ openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
-def get_translation_openai(text_to_translate: str):
+def get_translation_openai(text_to_translate):
     response = openai_client.responses.create(
         model="gpt-5-nano",
         instructions=(
@@ -28,7 +28,7 @@ def get_translation_openai(text_to_translate: str):
     return response.output_text
 
 
-def get_translation_gemini(text_to_translate: str):
+def get_translation_gemini(text_to_translate):
     response = gemini_client.models.generate_content(
         model="gemini-2.0-flash-lite",
         config=types.GenerateContentConfig(
@@ -43,7 +43,7 @@ def get_translation_gemini(text_to_translate: str):
     return response.text
 
 
-def get_random_texts(num: int):
+def get_random_texts(num):
     dataset = load_dataset("lavita/MedREQAL", split="train")
     texts = []
 
