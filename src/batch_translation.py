@@ -1,5 +1,5 @@
-import asyncio
 import os
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -11,7 +11,7 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
-async def poll_batch_job(job_name, interval=30):
+def poll_batch_job(job_name, interval=30):
     completed_states = {"JOB_STATE_SUCCEEDED", "JOB_STATE_FAILED", "JOB_STATE_CANCELLED", "JOB_STATE_EXPIRED"}
 
     while True:
@@ -21,10 +21,10 @@ async def poll_batch_job(job_name, interval=30):
             return batch_job
 
         print(f"Batch job {job_name} is still running...")
-        await asyncio.sleep(interval)
+        time.sleep(interval)
 
 
-async def process_batch_job(file_path):
+def process_batch_job(file_path):
     uploaded_file = client.files.upload(
         file=str(file_path),
         # in docs mime_type="jsonl", but that causes errors
@@ -40,7 +40,7 @@ async def process_batch_job(file_path):
     )
     print(f"Created batch job: {batch_job.name}")
 
-    batch_job = await poll_batch_job(batch_job.name)
+    batch_job = poll_batch_job(batch_job.name)
 
     print(f"Job finished with state: {batch_job.state.name}")
 
@@ -65,12 +65,11 @@ async def process_batch_job(file_path):
         print("No results found.")
 
 
-async def main():
+def main():
     batch_files = sorted((Path(__file__).parent.parent / "batches").glob("*.jsonl"))
-    async with asyncio.TaskGroup() as tg:
-        for fp in batch_files:
-            tg.create_task(process_batch_job(fp))
+    for file in batch_files:
+        process_batch_job(file)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
