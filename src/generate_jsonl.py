@@ -57,14 +57,14 @@ def generate_jsonl_batches(dataset, dataset_name, columns, batch_size=50_000):
 def main():
     columns = ["question", "background", "objective", "conclusion"]
     dataset = load_dataset("lavita/MedREQAL", split="train")
-    generate_jsonl_batches(dataset, "MedREQAL", columns, batch_size=100_000)
+    generate_jsonl_batches(dataset, "MedREQAL", columns)
 
     columns = ["instruction", "input", "output"]
     dataset = load_dataset("lavita/medical-qa-datasets", name="all-processed", split="train")
-    generate_jsonl_batches(dataset, "medical-qa-datasets", columns, batch_size=100_000)
+    generate_jsonl_batches(dataset, "medical-qa-datasets", columns)
 
     dataset = load_dataset("lavita/AlpaCare-MedInstruct-52k", split="train")
-    generate_jsonl_batches(dataset, "AlpaCare-MedInstruct-52k", columns, batch_size=100_000)
+    generate_jsonl_batches(dataset, "AlpaCare-MedInstruct-52k", columns)
 
 
 if __name__ == "__main__":

@@ -65,10 +65,44 @@ def process_batch_job(file_path):
         print("No results found.")
 
 
+def cleanup():
+    # delete batches
+    batches = client.batches.list(config={"page_size": 100})
+
+    for b in batches.page:
+        print(f"Job Name: {b.name}")
+        print(f"  - Display Name: {b.display_name}")
+        print(f"  - Create Time: {b.create_time.strftime('%Y-%m-%d %H:%M:%S')}")
+
+        try:
+            job_to_delete_name = b.name
+            client.batches.delete(name=job_to_delete_name)
+            print(f"Deleted {job_to_delete_name}")
+        except Exception as e:
+            print(f"Error deleting job: {e}")
+
+    # delete files
+    files = client.files.list(config={"page_size": 100})
+
+    for b in files.page:
+        print(f"File Name: {b.name}")
+        print(f"  - Display Name: {b.display_name}")
+        print(f"  - Uri: {b.uri}")
+        print(f"  - Create Time: {b.create_time.strftime('%Y-%m-%d %H:%M:%S')}")
+
+        try:
+            file_to_delete_name = b.name
+            client.files.delete(name=file_to_delete_name)
+            print(f"Deleted {file_to_delete_name}")
+        except Exception as e:
+            print(f"Error deleting file: {e}")
+
+
 def main():
-    batch_files = sorted((Path(__file__).parent.parent / "batches").glob("*.jsonl"))
+    batch_files = (Path(__file__).parent.parent / "batches").glob("*.jsonl")
     for file in batch_files:
         process_batch_job(file)
+        cleanup()
 
 
 if __name__ == "__main__":
