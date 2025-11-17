@@ -51,7 +51,7 @@ def main():
     total_count = count1 + count2 + count3
     print(f"Total word count from all datasets: {total_count}")
 
-    cost = get_estimated_cost(total_count, 750000, 0.075, 0.3, 1.25)
+    cost = get_estimated_cost(total_count, 750000, 0.15, 1.25, 1.25)
     print(f"Estimated cost: {cost}$")
 
 

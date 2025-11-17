@@ -55,7 +55,7 @@ def get_random_texts(num):
     return samples
 
 
-def main():
+def test_translation():
     texts_to_translate = get_random_texts(10)
 
     results = []
@@ -77,6 +77,10 @@ def main():
 
     with open("translations.json", "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=4)
+
+
+def main():
+    test_translation()
 
 
 if __name__ == "__main__":

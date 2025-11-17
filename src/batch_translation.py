@@ -102,7 +102,7 @@ def main():
     batch_files = (Path(__file__).parent.parent / "batches").glob("*.jsonl")
     for file in batch_files:
         process_batch_job(file)
-        cleanup()
+        #cleanup()
 
 
 if __name__ == "__main__":

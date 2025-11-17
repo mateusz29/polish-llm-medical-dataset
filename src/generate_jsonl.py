@@ -53,8 +53,37 @@ def generate_jsonl_batches(dataset, dataset_name, columns, batch_size=50_000):
     if batch_lines:
         save_batch(dataset_name, batch_number, batch_lines)
 
+def generate_jsonl_batches_from_list(texts):
+    batch_number = 0
+    batch_lines = []
 
-def main():
+    for num, text in tqdm(enumerate(texts), total=len(texts), desc="Building JSONL..."):
+        request_key = f"text_{num}"
+
+        entry = {
+            "key": request_key,
+            "request": {
+                "contents": [{"parts": [{"text": text}]}],
+                "system_instruction": {
+                    "parts": [
+                        {
+                            "text": (
+                                "You are a professional English-to-Polish translator. "
+                                "Translate all user messages from English to Polish. "
+                                "Only output the translated text, no explanations, formatting, or quotes."
+                            )
+                        }
+                    ]
+                },
+            },
+        }
+        batch_lines.append(entry)
+
+    if batch_lines:
+        save_batch("texts", batch_number, batch_lines)
+
+
+def make_batches_from_datasets():
     columns = ["question", "background", "objective", "conclusion"]
     dataset = load_dataset("lavita/MedREQAL", split="train")
     generate_jsonl_batches(dataset, "MedREQAL", columns)
@@ -65,6 +94,20 @@ def main():
 
     dataset = load_dataset("lavita/AlpaCare-MedInstruct-52k", split="train")
     generate_jsonl_batches(dataset, "AlpaCare-MedInstruct-52k", columns)
+
+
+def make_batches_from_txt():
+    with open("examples.txt") as f:
+        texts = f.readlines()
+
+    texts = [text[:-1] for text in texts]
+
+    generate_jsonl_batches_from_list(texts)
+
+
+def main():
+    #make_batches_from_datasets()
+    make_batches_from_txt()
 
 
 if __name__ == "__main__":
