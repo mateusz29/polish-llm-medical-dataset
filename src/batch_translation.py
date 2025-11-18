@@ -24,7 +24,7 @@ def poll_batch_job(job_name, interval=30):
         time.sleep(interval)
 
 
-def process_batch_job(file_path):
+def process_batch_job(model_name: str, file_path):
     uploaded_file = client.files.upload(
         file=str(file_path),
         # in docs mime_type="jsonl", but that causes errors
@@ -34,7 +34,7 @@ def process_batch_job(file_path):
     print(f"Uploaded file: {uploaded_file.name}")
 
     batch_job = client.batches.create(
-        model="models/gemini-2.0-flash-lite",
+        model=model_name,
         src=uploaded_file.name,
         config={"display_name": f"job-{uploaded_file.name}"},
     )
@@ -57,7 +57,9 @@ def process_batch_job(file_path):
 
         res_dir = file_path.parent / "results"
         res_dir.mkdir(parents=True, exist_ok=True)
-        res_path = res_dir / f"{file_path.stem}_results.jsonl"
+
+        model_name = model_name.split("/")[-1]
+        res_path = res_dir / f"{model_name}_{file_path.stem}_results.jsonl"
 
         with open(res_path, "w", encoding="utf-8") as f:
             f.write(file_content.decode("utf-8"))
@@ -101,8 +103,8 @@ def cleanup():
 def main():
     batch_files = (Path(__file__).parent.parent / "batches").glob("*.jsonl")
     for file in batch_files:
-        process_batch_job(file)
-        #cleanup()
+        process_batch_job("models/gemini-2.5-flash-preview-09-2025", file)
+        cleanup()
 
 
 if __name__ == "__main__":

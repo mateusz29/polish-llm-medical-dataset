@@ -16,7 +16,7 @@ def save_batch(dataset_name, batch_number, batch_lines):
             f.write(json.dumps(line) + "\n")
 
 
-def generate_jsonl_batches(dataset, dataset_name, columns, batch_size=50_000):
+def generate_gemini_jsonl_batches(dataset, dataset_name, columns, batch_size=50_000):
     batch_number = 0
     batch_lines = []
 
@@ -53,7 +53,7 @@ def generate_jsonl_batches(dataset, dataset_name, columns, batch_size=50_000):
     if batch_lines:
         save_batch(dataset_name, batch_number, batch_lines)
 
-def generate_jsonl_batches_from_list(texts):
+def generate_gemini_jsonl_batches_from_list(texts):
     batch_number = 0
     batch_lines = []
 
@@ -83,17 +83,54 @@ def generate_jsonl_batches_from_list(texts):
         save_batch("texts", batch_number, batch_lines)
 
 
+def generate_openai_jsonl_batches_from_list(model_name, texts):
+    batch_number = 0
+    batch_lines = []
+
+    for num, text in tqdm(enumerate(texts), total=len(texts), desc="Building JSONL..."):
+        request_key = f"text_{num}"
+
+        entry = {
+            "custom_id": request_key,
+            "method": "POST",
+            "url": "/v1/responses",
+            "body": {
+                "model": model_name,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are a professional English-to-Polish translator. "
+                            "Translate all user messages from English to Polish. "
+                            "Only output the translated text, no explanations, formatting, or quotes."
+                        )
+                    },
+                    {
+                        "role": "user",
+                        "content": text
+                    }
+                ]
+            }
+        }
+
+        batch_lines.append(entry)
+
+    if batch_lines:
+        batch_name = model_name + "_texts"
+        save_batch(batch_name, batch_number, batch_lines)
+
+
 def make_batches_from_datasets():
     columns = ["question", "background", "objective", "conclusion"]
     dataset = load_dataset("lavita/MedREQAL", split="train")
-    generate_jsonl_batches(dataset, "MedREQAL", columns)
+    generate_gemini_jsonl_batches(dataset, "MedREQAL", columns)
 
     columns = ["instruction", "input", "output"]
     dataset = load_dataset("lavita/medical-qa-datasets", name="all-processed", split="train")
-    generate_jsonl_batches(dataset, "medical-qa-datasets", columns)
+    generate_gemini_jsonl_batches(dataset, "medical-qa-datasets", columns)
 
     dataset = load_dataset("lavita/AlpaCare-MedInstruct-52k", split="train")
-    generate_jsonl_batches(dataset, "AlpaCare-MedInstruct-52k", columns)
+    generate_gemini_jsonl_batches(dataset, "AlpaCare-MedInstruct-52k", columns)
 
 
 def make_batches_from_txt():
@@ -102,7 +139,8 @@ def make_batches_from_txt():
 
     texts = [text[:-1] for text in texts]
 
-    generate_jsonl_batches_from_list(texts)
+    #generate_gemini_jsonl_batches_from_list(texts)
+    generate_openai_jsonl_batches_from_list("gpt-5-nano", texts)
 
 
 def main():
