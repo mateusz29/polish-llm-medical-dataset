@@ -53,6 +53,7 @@ def generate_gemini_jsonl_batches(dataset, dataset_name, columns, batch_size=50_
     if batch_lines:
         save_batch(dataset_name, batch_number, batch_lines)
 
+
 def generate_gemini_jsonl_batches_from_list(texts):
     batch_number = 0
     batch_lines = []
@@ -93,7 +94,7 @@ def generate_openai_jsonl_batches_from_list(model_name, texts):
         entry = {
             "custom_id": request_key,
             "method": "POST",
-            "url": "/v1/responses",
+            "url": "/v1/chat/completions",
             "body": {
                 "model": model_name,
                 "messages": [
@@ -103,14 +104,11 @@ def generate_openai_jsonl_batches_from_list(model_name, texts):
                             "You are a professional English-to-Polish translator. "
                             "Translate all user messages from English to Polish. "
                             "Only output the translated text, no explanations, formatting, or quotes."
-                        )
+                        ),
                     },
-                    {
-                        "role": "user",
-                        "content": text
-                    }
-                ]
-            }
+                    {"role": "user", "content": text},
+                ],
+            },
         }
 
         batch_lines.append(entry)
@@ -139,12 +137,12 @@ def make_batches_from_txt():
 
     texts = [text[:-1] for text in texts]
 
-    #generate_gemini_jsonl_batches_from_list(texts)
-    generate_openai_jsonl_batches_from_list("gpt-5-nano", texts)
+    # generate_gemini_jsonl_batches_from_list(texts)
+    generate_openai_jsonl_batches_from_list("gpt-5-mini", texts)
 
 
 def main():
-    #make_batches_from_datasets()
+    # make_batches_from_datasets()
     make_batches_from_txt()
 
 
