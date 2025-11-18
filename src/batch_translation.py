@@ -177,7 +177,7 @@ def openai_batch_translation(batch_files):
     for file in batch_files:
         process_openai_batch_job(file)
 
-    #openai_cleanup()
+    # openai_cleanup()
 
 
 def main():

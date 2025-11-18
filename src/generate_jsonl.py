@@ -133,9 +133,7 @@ def make_batches_from_datasets():
 
 def make_batches_from_txt():
     with open("examples.txt") as f:
-        texts = f.readlines()
-
-    texts = [text[:-1] for text in texts]
+        texts = [line.rstrip("\n") for line in f]
 
     # generate_gemini_jsonl_batches_from_list(texts)
     generate_openai_jsonl_batches_from_list("gpt-5-mini", texts)

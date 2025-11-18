@@ -1,6 +1,7 @@
 import json
 import os
 import random
+from pathlib import Path
 
 from datasets import load_dataset
 from dotenv import load_dotenv
@@ -79,8 +80,52 @@ def test_translation():
         json.dump(results, f, ensure_ascii=False, indent=4)
 
 
+def iter_json_lines(filepath):
+    with open(filepath, encoding="utf-8") as f:
+        for line in f:
+            content = line.strip()
+            if content:
+                yield json.loads(content)
+
+
+def combine_translations():
+    with open("examples.txt") as f:
+        texts = [line.rstrip("\n") for line in f]
+
+    results = [
+        {
+            "text": text,
+            "gpt-5-nano": "",
+            "gpt-5-mini": "",
+            "gemini-2.0-flash-lite": "",
+            "gemini-2.0-flash": "",
+            "gemini-2.5-flash-lite": "",
+            "gemini-2.5-flash-preview-09-2025": "",
+        }
+        for text in texts
+    ]
+
+    files = (Path(__file__).parent.parent / "batches" / "results").glob("*.jsonl")
+
+    for file in files:
+        model_version = file.name.split("_texts")[0]
+        model_name = file.name.split("-")[0]
+
+        for idx, obj in enumerate(iter_json_lines(file)):
+            if model_name == "gemini":
+                translation = obj["response"]["candidates"][0]["content"]["parts"][0]["text"]
+            else:
+                translation = obj["response"]["body"]["choices"][0]["message"]["content"]
+
+            results[idx][model_version] = translation
+
+    with open("combined_translations.json", "w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, indent=2)
+
+
 def main():
-    test_translation()
+    # test_translation()
+    combine_translations()
 
 
 if __name__ == "__main__":
