@@ -187,7 +187,8 @@ def main():
     # gemini_batch_translation("models/gemini-2.0-flash", batch_files)
     # gemini_batch_translation("models/gemini-2.5-flash-lite", batch_files)
     # gemini_batch_translation("models/gemini-2.5-flash-preview-09-2025", batch_files)
-    openai_batch_translation(batch_files)
+    gemini_batch_translation("models/gemini-2.5-pro", batch_files)
+    # openai_batch_translation(batch_files)
 
 
 if __name__ == "__main__":
