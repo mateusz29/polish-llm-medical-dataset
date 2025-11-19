@@ -33,9 +33,14 @@ def generate_gemini_jsonl_batches(dataset, dataset_name, columns, batch_size=50_
                         "parts": [
                             {
                                 "text": (
-                                    "You are a professional English-to-Polish translator. "
-                                    "Translate all user messages from English to Polish. "
-                                    "Only output the translated text, no explanations, formatting, or quotes."
+                                    "You are a professional translator. Translate English text into Polish literally and exactly. "
+                                    "Do NOT answer questions, explain, summarize, or add content. "
+                                    "Do NOT include quotes, formatting, commentary, or extra text. "
+                                    "Output exactly one string corresponding to the input text. "
+                                    "Translate all natural-language content into Polish in a clinically correct way. "
+                                    "Translate disease names, symptoms, mechanisms, and general terminology. "
+                                    "Use Polish forms of drug names only when standard Polish usage has an established form. "
+                                    "Do not invent Polish equivalents when none exist in real clinical usage."
                                 )
                             }
                         ]
@@ -69,9 +74,14 @@ def generate_gemini_jsonl_batches_from_list(texts):
                     "parts": [
                         {
                             "text": (
-                                "You are a professional English-to-Polish translator. "
-                                "Translate all user messages from English to Polish. "
-                                "Only output the translated text, no explanations, formatting, or quotes."
+                                "You are a professional translator. Translate English text into Polish literally and exactly. "
+                                "Do NOT answer questions, explain, summarize, or add content. "
+                                "Do NOT include quotes, formatting, commentary, or extra text. "
+                                "Output exactly one string corresponding to the input text. "
+                                "Translate all natural-language content into Polish in a clinically correct way. "
+                                "Translate disease names, symptoms, mechanisms, and general terminology. "
+                                "Use Polish forms of drug names only when standard Polish usage has an established form. "
+                                "Do not invent Polish equivalents when none exist in real clinical usage."
                             )
                         }
                     ]
@@ -101,9 +111,14 @@ def generate_openai_jsonl_batches_from_list(model_name, texts):
                     {
                         "role": "system",
                         "content": (
-                            "You are a professional English-to-Polish translator. "
-                            "Translate all user messages from English to Polish. "
-                            "Only output the translated text, no explanations, formatting, or quotes."
+                            "You are a professional translator. Translate English text into Polish literally and exactly. "
+                            "Do NOT answer questions, explain, summarize, or add content. "
+                            "Do NOT include quotes, formatting, commentary, or extra text. "
+                            "Output exactly one string corresponding to the input text. "
+                            "Translate all natural-language content into Polish in a clinically correct way. "
+                            "Translate disease names, symptoms, mechanisms, and general terminology. "
+                            "Use Polish forms of drug names only when standard Polish usage has an established form. "
+                            "Do not invent Polish equivalents when none exist in real clinical usage."
                         ),
                     },
                     {"role": "user", "content": text},
@@ -135,7 +150,8 @@ def make_batches_from_txt():
     with open("examples.txt") as f:
         texts = [line.rstrip("\n") for line in f]
 
-    # generate_gemini_jsonl_batches_from_list(texts)
+    generate_gemini_jsonl_batches_from_list(texts)
+    generate_openai_jsonl_batches_from_list("gpt-5-nano", texts)
     generate_openai_jsonl_batches_from_list("gpt-5-mini", texts)
 
 
