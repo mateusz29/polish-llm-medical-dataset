@@ -59,6 +59,48 @@ def generate_gemini_jsonl_batches(dataset, dataset_name, columns, batch_size=50_
         save_batch(dataset_name, batch_number, batch_lines)
 
 
+def generate_gemini_jsonl_batches_from_df(df, dataset_name, columns, batch_size=50_000):
+    batch_number = 0
+    batch_lines = []
+
+    for row_id, row in tqdm(df.iterrows(), total=len(df), desc=f"Building JSONL for {dataset_name}..."):
+        for col in columns:
+            text = row[col]
+            request_key = f"{dataset_name}_{row_id}_{col}"
+
+            entry = {
+                "key": request_key,
+                "request": {
+                    "contents": [{"parts": [{"text": text}]}],
+                    "system_instruction": {
+                        "parts": [
+                            {
+                                "text": (
+                                    "You are a professional translator. Translate English text into Polish literally and exactly. "
+                                    "Do NOT answer questions, explain, summarize, or add content. "
+                                    "Do NOT include quotes, formatting, commentary, or extra text. "
+                                    "Output exactly one string corresponding to the input text. "
+                                    "Translate all natural-language content into Polish in a clinically correct way. "
+                                    "Translate disease names, symptoms, mechanisms, and general terminology. "
+                                    "Use Polish forms of drug names only when standard Polish usage has an established form. "
+                                    "Do not invent Polish equivalents when none exist in real clinical usage."
+                                )
+                            }
+                        ]
+                    },
+                },
+            }
+            batch_lines.append(entry)
+
+        if len(batch_lines) >= batch_size:
+            save_batch(dataset_name, batch_number, batch_lines)
+            batch_number += 1
+            batch_lines = []
+
+    if batch_lines:
+        save_batch(dataset_name, batch_number, batch_lines)
+
+
 def generate_gemini_jsonl_batches_from_list(texts):
     batch_number = 0
     batch_lines = []

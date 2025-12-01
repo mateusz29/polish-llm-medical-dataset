@@ -183,12 +183,7 @@ def openai_batch_translation(batch_files):
 def main():
     batch_files = (Path(__file__).parent.parent / "batches").glob("*.jsonl")
 
-    # gemini_batch_translation("models/gemini-2.0-flash-lite", batch_files)
-    # gemini_batch_translation("models/gemini-2.0-flash", batch_files)
-    # gemini_batch_translation("models/gemini-2.5-flash-lite", batch_files)
-    # gemini_batch_translation("models/gemini-2.5-flash-preview-09-2025", batch_files)
-    gemini_batch_translation("models/gemini-2.5-pro", batch_files)
-    # openai_batch_translation(batch_files)
+    gemini_batch_translation("models/gemini-2.0-flash-lite", batch_files)
 
 
 if __name__ == "__main__":
