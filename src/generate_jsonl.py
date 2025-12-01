@@ -156,8 +156,8 @@ def make_batches_from_txt():
 
 
 def main():
-    # make_batches_from_datasets()
-    make_batches_from_txt()
+    make_batches_from_datasets()
+    # make_batches_from_txt()
 
 
 if __name__ == "__main__":

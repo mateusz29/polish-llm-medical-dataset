@@ -6,3 +6,17 @@ Translate medical instruction datasets from English to Polish with assuring corr
 - https://huggingface.co/datasets/lavita/AlpaCare-MedInstruct-52k
 
 Fine-tune Polish LLMs with medical instructions.
+
+
+question + objective = instruction
+background = input
+convlusion = output
+
+output
+input
+instruction
+
+question
+background
+objective
+conclusion
