@@ -11,12 +11,3 @@ Fine-tune Polish LLMs with medical instructions.
 question + objective = instruction
 background = input
 convlusion = output
-
-output
-input
-instruction
-
-question
-background
-objective
-conclusion
