@@ -103,6 +103,7 @@ def gemini_cleanup():
 
 
 def gemini_batch_translation(model_name, batch_files):
+    gemini_cleanup()
     for file in batch_files:
         process_gemini_batch_job(model_name, file)
         gemini_cleanup()
@@ -184,6 +185,7 @@ def main():
     batch_files = (Path(__file__).parent.parent / "batches").glob("*.jsonl")
 
     gemini_batch_translation("models/gemini-2.0-flash-lite", batch_files)
+    # gemini_batch_translation("models/gemini-2.0-flash", batch_files)
 
 
 if __name__ == "__main__":

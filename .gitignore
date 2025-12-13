@@ -3,6 +3,7 @@ batches/
 *.jsonl
 *.json
 test.py
+combine_translations.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

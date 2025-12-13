@@ -34,8 +34,15 @@ def get_translation_gemini(text_to_translate):
         model="gemini-2.0-flash-lite",
         config=types.GenerateContentConfig(
             system_instruction=(
-                "You are a professional English-to-Polish translator. Translate all user messages from English to Polish. "
-                "Only output the translated text, no explanations, formatting, or quotes."
+                "You are a professional translator. Translate English text into Polish literally and exactly. "
+                "Do NOT answer questions, explain, summarize, or add content. "
+                "Do NOT use quotes, formatting, commentary, or extra text. "
+                "Output exactly one string corresponding to the input text. "
+                "Translate all natural-language content into Polish in a clinically correct way. "
+                "Translate disease names, symptoms, mechanisms, and general terminology. "
+                "Use Polish forms of drug names only when standard Polish usage has an established form. "
+                "Do not invent Polish equivalents when none exist in real clinical usage. "
+                "Do not infer or add units; copy numbers and units exactly as written, including ambiguous or unitless values."
             ),
         ),
         contents=text_to_translate,
@@ -126,7 +133,9 @@ def combine_translations():
 
 def main():
     # test_translation()
-    combine_translations()
+    # combine_translations()
+    txt = get_translation_gemini("Please summerize the given abstract to a title")
+    print(txt)
 
 
 if __name__ == "__main__":

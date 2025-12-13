@@ -60,5 +60,6 @@ def main():
     )
     print(f"Estimated cost: {cost}$")
 
+
 if __name__ == "__main__":
     main()

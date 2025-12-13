@@ -66,24 +66,27 @@ def generate_gemini_jsonl_batches_from_df(df, dataset_name, columns, batch_size=
     for row_id, row in tqdm(df.iterrows(), total=len(df), desc=f"Building JSONL for {dataset_name}..."):
         for col in columns:
             text = row[col]
+            if text.strip() == "":
+                continue
             request_key = f"{dataset_name}_{row_id}_{col}"
 
             entry = {
                 "key": request_key,
                 "request": {
-                    "contents": [{"parts": [{"text": text}]}],
+                    "contents": [{"parts": [{"text": "Text to translate:\n" + text}]}],
                     "system_instruction": {
                         "parts": [
                             {
                                 "text": (
                                     "You are a professional translator. Translate English text into Polish literally and exactly. "
                                     "Do NOT answer questions, explain, summarize, or add content. "
-                                    "Do NOT include quotes, formatting, commentary, or extra text. "
+                                    "Do NOT use quotes, formatting, commentary, or extra text. "
                                     "Output exactly one string corresponding to the input text. "
                                     "Translate all natural-language content into Polish in a clinically correct way. "
                                     "Translate disease names, symptoms, mechanisms, and general terminology. "
                                     "Use Polish forms of drug names only when standard Polish usage has an established form. "
-                                    "Do not invent Polish equivalents when none exist in real clinical usage."
+                                    "Do not invent Polish equivalents when none exist in real clinical usage. "
+                                    "Do not infer or add units; copy numbers and units exactly as written, including ambiguous or unitless values."
                                 )
                             }
                         ]
