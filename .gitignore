@@ -6,6 +6,7 @@ test.py
 combine_old.py
 combine_translations.ipynb
 *.pkl
+*.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
